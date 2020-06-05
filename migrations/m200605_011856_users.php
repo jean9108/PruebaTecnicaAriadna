@@ -37,23 +37,6 @@ class m200605_011856_users extends Migration
      */
     public function safeDown()
     {
-        echo "m200605_011856_users cannot be reverted.\n";
-
-        return false;
+        $this->dropTable('{{%users}}');
     }
-
-    /*
-    // Use up()/down() to run migration code without a transaction.
-    public function up()
-    {
-
-    }
-
-    public function down()
-    {
-        echo "m200605_011856_users cannot be reverted.\n";
-
-        return false;
-    }
-    */
 }
