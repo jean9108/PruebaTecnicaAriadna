@@ -1,0 +1,50 @@
+.wrap nav {
+    background: linear-gradient(90deg, #e06c6c 40%, #c72c37 100%);
+}
+
+.wrap .container .navbar-brand {
+    padding: 0;
+}
+
+.footer {
+    background: linear-gradient(90deg, #e06c6c 40%, #c72c37 100%);
+    color: #ffffff;
+    font-weight: bold;
+    text-align: center;
+}
+
+
+/*Login*/
+
+.form-box-login {
+    margin-top: 35px;
+    border: 1px solid #eeeeee;
+    border-radius: 4px 4px 0 0;
+    box-shadow: 0 3px 10px 0px #827b7bed;
+}
+
+.form-top {
+    overflow: hidden;
+    padding: 10px 25px 15px 25px;
+    background: #fff;
+    -moz-border-radius: 4px 4px 0 0;
+    -webkit-border-radius: 4px 4px 0 0;
+    border-radius: 4px 4px 0 0;
+    text-align: lef
+}
+
+.form-bottom {
+    padding: 25px 25px 30px 25px;
+    -moz-border-radius: 0 0 4px 4px;
+    -webkit-border-radius: 0 0 4px 4px;
+    border-radius: 0 0 4px 4px;
+    text-align: left;
+}
+
+.inicio-seccion {
+    text-align: center;
+}
+
+.inicio-seccion .btn-danger {
+    font-weight: bold;
+}
