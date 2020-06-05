@@ -5,7 +5,7 @@ namespace app\controllers;
 use Yii;
 use app\models\Radicados;
 use app\models\RadicadosSearch;
-
+use DateTime;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -29,7 +29,7 @@ class RadicadosController extends Controller
         $behaviors['access'] = [
             'class' => AccessControl::class,
             'rules' =>[
-                ['actions' => ['index', 'view', 'create', 'update','delete'],
+                ['actions' => ['index', 'create', 'update','delete'],
                     'allow' => true,
                     'roles' => ['@']
                 ]
@@ -54,18 +54,6 @@ class RadicadosController extends Controller
         ]);
     }
 
-    /**
-     * Displays a single Radicados model.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
 
     /**
      * Creates a new Radicados model.
@@ -74,23 +62,29 @@ class RadicadosController extends Controller
      */
     public function actionCreate()
     {
+        date_default_timezone_set('America/Bogota');
+        $date = new \DateTime('now');
         $model = new Radicados();
         $msg = '';
+        $model->user_id =Yii::$app->user->id;
 
         //Validación por Ajax
-        if ($model->load(Yii::$app->request->post()) && Yii::$app->request->isAjax):
+        if ($model->load(Yii::$app->request->post()) && Yii::$app->request->isAjax ):
             Yii::$app->response->format = Response::FORMAT_JSON;
             return  ActiveForm::validate($model);
         endif;
 
         if($model->load(Yii::$app->request->post())):
-            if($model->validate() && $model->save()):
-                $msg = 'Se creo el usuario correctamente';
-            endif;
-        else:
-            $model->getErrors();
-        endif;
+            $temas = implode(',',$model->temas);
+            $model->temas = $temas;
+            $model->fecha_registro = date_format($date, 'Y-m-d H:i:s');
 
+            if($model->validate() && $model->save()):
+                    return $this->redirect('index');
+            else:
+               $model->getErrors();
+            endif;
+        endif;
         return $this->render('create', [
             'model' => $model,
             'msg' => $msg
@@ -107,9 +101,23 @@ class RadicadosController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $temas = explode(',', $model->temas);
+        $model->temas = $temas;
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+         //Validación por Ajax
+         if ($model->load(Yii::$app->request->post()) && Yii::$app->request->isAjax ):
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return  ActiveForm::validate($model);
+        endif;
+
+        if ($model->load(Yii::$app->request->post())) {
+            $temas = implode(',',$model->temas);
+            $model->temas = $temas;
+            if($model->validate() && $model->save()):
+                return $this->redirect('index');
+            else:
+                $model->getErrors();
+            endif;
         }
 
         return $this->render('update', [

@@ -5,12 +5,16 @@ namespace app\models;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\Radicados;
+use yii\db\Query;
+use yii\helpers\VarDumper;
 
 /**
  * RadicadosSearch represents the model behind the search form of `app\models\Radicados`.
  */
 class RadicadosSearch extends Radicados
 {
+    public $email;
+    public $temas;
     /**
      * {@inheritdoc}
      */
@@ -18,7 +22,7 @@ class RadicadosSearch extends Radicados
     {
         return [
             [['id', 'user_id', 'numero_radicado', 'estado'], 'integer'],
-            [['titulo', 'temas', 'fecha'], 'safe'],
+            [['titulo', 'temas', 'fecha', 'email','hora'], 'safe'],
         ];
     }
 
@@ -40,7 +44,20 @@ class RadicadosSearch extends Radicados
      */
     public function search($params)
     {
-        $query = Radicados::find();
+        $query = new Query();
+        $query->select([
+            'rad.id',
+            'rad.numero_radicado',
+            'rad.titulo',
+            'u.email',
+            'rad.temas',
+            'rad.fecha',
+            'rad.hora',
+            'rad.estado'
+        ])
+        ->from(['rad' => 'radicados'])
+        ->leftJoin(['u' => 'users'], 'u.id=rad.user_id')
+        ->orderBy('rad.fecha_registro desc');
 
         // add conditions that should always apply here
 
@@ -66,7 +83,9 @@ class RadicadosSearch extends Radicados
         ]);
 
         $query->andFilterWhere(['ilike', 'titulo', $this->titulo])
-            ->andFilterWhere(['ilike', 'temas', $this->temas]);
+            ->andFilterWhere(['ilike', 'temas', $this->temas])
+            ->andFilterWhere(['ilike', 'email', $this->email])
+            ->andFilterWhere(['ilike', 'hora', $this->hora]);
 
         return $dataProvider;
     }

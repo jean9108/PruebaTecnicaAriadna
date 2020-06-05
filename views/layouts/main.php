@@ -38,16 +38,15 @@ AppAsset::register($this);
             echo Nav::widget([
                 'options' => ['class' => 'navbar-nav navbar-right'],
                 'items' => [
-                    ['label' => 'Home', 'url' => ['/site/index']],
-                    ['label' => 'About', 'url' => ['/site/about']],
-                    ['label' => 'Contact', 'url' => ['/site/contact']],
+                    ['label' => 'Inicio', 'url' => ['/radicados/index']],
+                    ['label' => 'Crear Radicacion', 'url' => ['/radicados/create']],
                     Yii::$app->user->isGuest ? (
                         ['label' => 'Login', 'url' => ['/site/login']]
                     ) : (
                         '<li>'
                         . Html::beginForm(['/site/logout'], 'post')
                         . Html::submitButton(
-                            'Logout (' . Yii::$app->user->identity->username . ')',
+                            'Cerrar sesión',
                             ['class' => 'btn btn-link logout']
                         )
                         . Html::endForm()

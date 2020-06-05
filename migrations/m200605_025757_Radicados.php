@@ -25,7 +25,7 @@ class m200605_025757_Radicados extends Migration
             'titulo' => $this->string()->notNull(),
             'temas' => $this->string()->notNull(),
             'fecha' => $this->integer(4)->notNull(),
-            'hora' => $this->time()->notNull()->defaultValue('NOW()'),
+            'hora' => $this->string(),
             'estado' => $this->smallInteger()->notNull()->defaultValue(1),
             'fecha_registro' =>  $this->timestamp()->notNull(),
         ],$tableOptions);

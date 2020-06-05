@@ -1,9 +1,25 @@
+/*Inicio*/
+
+.wrap>.container {
+    padding: 55px 15px 55px 20px;
+}
+
 .wrap nav {
     background: linear-gradient(90deg, #e06c6c 40%, #c72c37 100%);
 }
 
 .wrap .container .navbar-brand {
     padding: 0;
+}
+
+.navbar-inverse .navbar-nav>li>a {
+    color: #ffffff !important;
+    font-weight: 700;
+}
+
+.navbar-inverse .btn-link {
+    color: #ffffff !important;
+    font-weight: 700;
 }
 
 .footer {
@@ -47,4 +63,30 @@
 
 .inicio-seccion .btn-danger {
     font-weight: bold;
+}
+
+
+/*Create and update*/
+
+.select2-container--material .select2-selection--multiple .select2-search__field {
+    font-size: 14px;
+}
+
+.select2-container--material .select2-selection--multiple .select2-selection__choice__remove {
+    font-size: 14px;
+    top: 2px;
+}
+
+.select2-container--material .select2-selection--multiple .select2-selection__choice {
+    font-size: 14px;
+    background-color: #e06c6c;
+    color: #ffffff;
+}
+
+.select2-container--material .select2-selection__clear {
+    font-size: 14px;
+}
+
+.select2-container--material .select2-selection--single .select2-selection__rendered {
+    font-size: 14px;
 }

@@ -48,14 +48,14 @@ class Radicados extends \yii\db\ActiveRecord
     {
         return [
             [['numero_radicado', 'titulo', 'temas', 'fecha'], 'required', 'message' => '{attribute} no es válido'],
-            [['user_id'], 'default', 'value' => self::STATUS_ACTIVE],
+            [['estado'], 'default', 'value' => self::STATUS_ACTIVE],
             [['user_id', 'numero_radicado', 'estado'], 'integer'],
-            [['fecha_registro'], 'datetime'],
-            [['titulo', 'temas'], 'string', 'max' => 255],
-            [['hora'], 'time'],
+            [['fecha_registro'], 'datetime', 'format' => 'php:Y-m-d H:i:s'],
+            [['titulo'], 'string'],
+            [['hora'], 'string'],
             [['fecha'], 'validaFecha'],
             //Validación para el número de radicación
-            [['numero_radicado'], 'match', 'pattern' => '/^{6,6}$/', 'message' => '{attribute} incorrecto'],
+            //[['numero_radicado'], 'match', 'pattern' => '/^{6,6}$/', 'message' => '{attribute} incorrecto'],
             [['numero_radicado'], 'match', 'pattern' => '/^[0-9]+$/i', 'message' => '{attribute} no es válido'],
             [['numero_radicado'], 'unique'],
             [['numero_radicado'], 'validarRadicado'],
@@ -91,7 +91,8 @@ class Radicados extends \yii\db\ActiveRecord
             ':estado' => self::STATUS_ACTIVE
         ])
         ->one();
-        if(isset($radicado->id)):
+
+        if(!empty ($radicado->id) && empty($this->id)):
             $this->addError('numero_radicado', 'Ya existe este número de Radicado');
         endif;
     }
@@ -118,7 +119,7 @@ class Radicados extends \yii\db\ActiveRecord
             ->where('estado = :estado',[':estado' => Yii::$app->params['estadoActivo']]);
         $temas = $query->all();
 
-        return ArrayHelper::map($temas,'id_tema', 'nombre');
+        return ArrayHelper::map($temas,(string)'id_tema', 'nombre');
 
     }
 

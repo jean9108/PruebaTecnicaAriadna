@@ -27,28 +27,39 @@ use kartik\select2\Select2;
             Select2::classname(),[
                 'data' => $model->getTemas(),
                 'theme' => Select2::THEME_MATERIAL,
-                'options' => ['placeholder' => 'Select a state ...', 'multiple' => true, 'autocomplete' => 'off'],
+                'options' => ['placeholder' => 'Selecciona ...', 'multiple' => true, 'autocomplete' => 'off'],
                 'pluginOptions' => [
                     'allowClear' => true
                 ],
             ]
-        ) 
+            );
     ?>
 
-    <?= $form->field($model, 'fecha')->dropDownList($model->getFechas(),['prompt' => 'Seleccione el año ...']) ?>
+    <?= 
+        $form->field($model,'fecha')->widget(
+            Select2::classname(),[
+                'data' => $model->getFechas(),
+                'theme' => Select2::THEME_MATERIAL,
+                'options' => ['placeholder' => 'Seleccione ...', 'autocomplete' => 'off'],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ]
+        );
+    ?>
 
     <?=
         $form->field($model,'hora')->
         widget(TimePicker::classname(),[
             'addonOptions' => [
                 'asButton' => true,
-                'buttonOptions' => ['class' => 'btn btn-info']
+                'buttonOptions' => ['class' => 'btn btn-danger']
             ]
         ])->label();
     ?>
-    
+    <br />
     <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton('Guardar', ['class' => 'btn btn-danger btn-block mt-5']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
