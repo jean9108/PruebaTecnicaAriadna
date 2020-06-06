@@ -25,13 +25,7 @@ use yii\helpers\VarDumper;
 
 class Radicados extends \yii\db\ActiveRecord
 {
-    //Estado
-    const STATUS_ACTIVE = 1;
-    const STATUS_DELETE = 0;
-
-    //Año
-    const ANIO_MIN = 2007;
-    const ANIO_MAX = 2013;
+    public $temas;
 
     /**
      * {@inheritdoc}
@@ -47,18 +41,19 @@ class Radicados extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['numero_radicado', 'titulo', 'temas', 'fecha'], 'required', 'message' => '{attribute} no es válido'],
-            [['estado'], 'default', 'value' => self::STATUS_ACTIVE],
+            [['numero_radicado', 'titulo'], 'required', 'message' => 'El {attribute} no es válido'],
+            [['temas'], 'required', 'message' => 'El/los {attribute} no es/son válido(s)'],
+            [['fecha'], 'required', 'message' => 'La {attribute} no es válida'],
+            [['estado'], 'default', 'value' => Yii::$app->params['estadoActivo']],
             [['user_id', 'numero_radicado', 'estado'], 'integer'],
             [['fecha_registro'], 'datetime', 'format' => 'php:Y-m-d H:i:s'],
             [['titulo'], 'string'],
             [['hora'], 'string'],
             [['fecha'], 'validaFecha'],
             //Validación para el número de radicación
-            //[['numero_radicado'], 'match', 'pattern' => '/^{6,6}$/', 'message' => '{attribute} incorrecto'],
             [['numero_radicado'], 'match', 'pattern' => '/^[0-9]+$/i', 'message' => '{attribute} no es válido'],
-            [['numero_radicado'], 'unique'],
             [['numero_radicado'], 'validarRadicado'],
+            [['numero_radicado'], 'unique'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
@@ -88,7 +83,7 @@ class Radicados extends \yii\db\ActiveRecord
         ->andWhere('estado = :estado')
         ->addParams([
             ':numero_radicado' => $this->numero_radicado,
-            ':estado' => self::STATUS_ACTIVE
+            ':estado' => Yii::$app->params['estadoActivo']
         ])
         ->one();
 
@@ -99,14 +94,14 @@ class Radicados extends \yii\db\ActiveRecord
 
     public function validaFecha($attribute,$params){
 
-        if($this->fecha < self::ANIO_MIN || $this->fecha > self::ANIO_MAX):
+        if($this->fecha < Yii::$app->params['anioMin'] || $this->fecha > Yii::$app->params['anioMax']):
             $this->addError('fecha', 'Año invalido. El año debe estar entre el 2007 y el 2013');
         endif;
     }
 
     public function getFechas(){
         $anios = [];
-        for($i = self::ANIO_MIN; $i <= self::ANIO_MAX; $i++):
+        for($i = Yii::$app->params['anioMin']; $i <= Yii::$app->params['anioMax']; $i++):
             $anios[$i] = $i;
         endfor;
         return $anios;

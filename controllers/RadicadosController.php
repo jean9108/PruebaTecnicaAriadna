@@ -6,10 +6,12 @@ use Yii;
 use app\models\Radicados;
 use app\models\RadicadosSearch;
 use DateTime;
+use yii\db\Query;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 use yii\helpers\VarDumper;
 //Librerias para validacion por Ajax
 use yii\web\Response;
@@ -75,11 +77,10 @@ class RadicadosController extends Controller
         endif;
 
         if($model->load(Yii::$app->request->post())):
-            $temas = implode(',',$model->temas);
-            $model->temas = $temas;
             $model->fecha_registro = date_format($date, 'Y-m-d H:i:s');
 
             if($model->validate() && $model->save()):
+                    $this->setRadicadosTemas($model->id, $model->temas);
                     return $this->redirect('index');
             else:
                $model->getErrors();
@@ -101,8 +102,7 @@ class RadicadosController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $temas = explode(',', $model->temas);
-        $model->temas = $temas;
+        $model->temas = $this->getRadicadosTemas($model->id);
 
          //Validación por Ajax
          if ($model->load(Yii::$app->request->post()) && Yii::$app->request->isAjax ):
@@ -111,9 +111,8 @@ class RadicadosController extends Controller
         endif;
 
         if ($model->load(Yii::$app->request->post())) {
-            $temas = implode(',',$model->temas);
-            $model->temas = $temas;
             if($model->validate() && $model->save()):
+                $this->setRadicadosTemas($model->id,$model->temas);
                 return $this->redirect('index');
             else:
                 $model->getErrors();
@@ -123,6 +122,55 @@ class RadicadosController extends Controller
         return $this->render('update', [
             'model' => $model,
         ]);
+    }
+
+    private function setRadicadosTemas($radicados, $temas){
+        //En caso de existir radicados actualiza el estado a inactivo
+        $estado =  Yii::$app->db->createCommand()->delete(
+                'radicaciones_temas',
+                'id_radicacion = :id_radicacion',
+                [':id_radicacion' => $radicados]
+        );
+
+        $estado->execute();
+
+        foreach($temas as $tema):
+            $query = Yii::$app->db->createCommand()->insert('radicaciones_temas',
+                [
+                    'id_tema' => $tema,
+                    'id_radicacion' =>$radicados
+                ]
+            );
+            $query->execute();
+        endforeach;
+    }
+
+    private function getRadicadosTema($radicado, $tema){
+        $query = new Query();
+        $query->select(['id_radicacion','id_tema'])
+            ->from('radicaciones_temas')
+            ->where('id_tema = :id_tema AND id_radicacion = :id_radicacion',
+                [
+                    ':id_tema' => $tema,
+                    ':id_radicacion' => $radicado,
+                ]
+            );
+        $temas = $query->all();
+        VarDumper::dump($temas, $depth = 10, $highlight = true);die;
+    }
+
+    private function getRadicadosTemas($radicados){
+        $query = new Query();
+        $query->select(['id_radicacion','id_tema'])
+            ->from('radicaciones_temas')
+            ->where('estado = :estado AND id_radicacion = :id_radicacion',
+                [
+                    ':estado' => Yii::$app->params['estadoActivo'],
+                    ':id_radicacion' => $radicados,
+                ]
+            );
+        $temas = $query->all();
+        return ArrayHelper::map($temas, 'id_tema', 'id_tema');
     }
 
     /**

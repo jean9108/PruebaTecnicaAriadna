@@ -23,9 +23,8 @@ class m200605_025757_Radicados extends Migration
             'user_id' => $this->integer()->notNull(),
             'numero_radicado' => $this->integer(6)->notNull()->unique(),
             'titulo' => $this->string()->notNull(),
-            'temas' => $this->string()->notNull(),
             'fecha' => $this->integer(4)->notNull(),
-            'hora' => $this->string(),
+            'hora' => $this->time(),
             'estado' => $this->smallInteger()->notNull()->defaultValue(1),
             'fecha_registro' =>  $this->timestamp()->notNull(),
         ],$tableOptions);

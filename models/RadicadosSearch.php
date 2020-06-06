@@ -50,7 +50,6 @@ class RadicadosSearch extends Radicados
             'rad.numero_radicado',
             'rad.titulo',
             'u.email',
-            'rad.temas',
             'rad.fecha',
             'rad.hora',
             'rad.estado'
